@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Simple Soundboard JSON</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="Simple Soundboard JSON">
+    <meta name="viewport" content="width=device-width">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./sb.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/0.4.0/balloon.min.css">
+</head>
+
+<body>
+    <div id="soundboard">
+    </div>
+
+    <script type="text/javascript">
+        var sounds = [];
+
+        $.ajax({
+            url: "neil-rogers-show-soundboard.json", // Add link to your JSON file here
+            dataType: "json",
+            type: "get",
+            cache: false,
+            success: function (data) {
+                $(data.files).each(function (index, value) {
+                    // name includes name of audio track (audioName) 
+                    // and artist if available (artistName)
+                    var name = value.name.split(" - ");
+                    var audioName = name[0];
+                    var artistName = name[1];
+                    if (artistName === undefined) {
+                        artistName = "";
+                    }
+                    var thisSound = {
+                        audioName: audioName,
+                        artistName: artistName,
+                        mp3: value.mp3
+                    };
+                    sounds.push(thisSound);
+                })
+            }
+        }).done(function () {
+            sounds.map(file => {
+                $('#soundboard').append(function () {
+                    var thisAudio = $('<audio/>').attr({
+                        src: file.mp3,
+                        preload: "auto",
+                        onplay: "$(this).siblings('button').css('color', 'yellow');",
+                        onended: "$(this).siblings('button').css('color', 'white');"
+                    });
+                    var thisButton;
+                    if (file.artistName !== "") {
+                        //artist = artist.replace('&amp;','').replace('&quot;','');
+                        thisButton = $('<button />').addClass('myButton').text(file.audioName).attr("data-balloon", file.artistName).attr("data-balloon-pos", "down");
+                    } else {
+                        thisButton = $('<button />').addClass('myButton').text(file.audioName);
+                    }
+
+                    return $('<span />').addClass('track').append(thisAudio).append(thisButton);
+                });
+            });
+            $('#soundboard').on('click', 'button', function () {
+                $(this).siblings('audio').get(0).play();
+            });
+        });
+
+    </script>
+
+    <div id="footer">
+        <p>
+            <strong>
+                <a href="/">HOME</a>
+            </strong>
+        </p>
+    </div>
+</body>
+
+</html>
