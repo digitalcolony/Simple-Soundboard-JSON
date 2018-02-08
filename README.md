@@ -27,6 +27,8 @@ The name field has both the title of the audio track and the artist seperated by
 
 You could host the audio files anywhere you like, but for this project, I used archive.org. Once I had a page created with all the audio drops I wanted on my Soundboard, I used a NodeJS tool I wrote called [JSON builder for Archive.org](https://github.com/digitalcolony/archive-json-builder) that builds the JSON file.
 
+UPDATE: It turns out Archive uses URLs that redirect to the hosted media file. I'm not sure if the resolved links are temporary or permanent. As a result of the redirects, using the Soundboard code with Archive will load slower. If your soundboard has a limited number of drops that likely won't be an issue, but as you add more files the page load time will increase.
+
 ## Resources
 
 1. The Soundboard uses [Ballon.CSS](https://kazzkiq.github.io/balloon.css/) for the mouseover tooltips.
